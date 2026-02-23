@@ -10,7 +10,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     const {channelId} = req.params
     // TODO: toggle subscription
     if (!isValidObjectId(channelId)) {
-        throw new ApiError(402, "channelId not found")
+        throw new ApiError(402, "Invalid channelId")
     }
 
     const isSubscribed = await Subscription.findOne({
@@ -38,16 +38,16 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
 // controller to return subscriber list of a channel
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
-    const {channelId} = req.params
+    let {channelId} = req.params
 
     if (!isValidObjectId(channelId)) {
         throw new ApiError(403, "ChannelId not found")
     }
     channelId = new mongoose.Types.ObjectId(channelId)
 
-    const subscribers = Subscription.aggregate([
+    const subscribers = await Subscription.aggregate([
         {
-            $match: channelId
+            $match: {channel: channelId}
         },
         {
             $lookup: {
@@ -58,7 +58,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                 pipeline: [
                     {
                         $lookup: {
-                            from: "subscription",
+                            from: "subscriptions",
                             localField: "_id",
                             foreignField: "channel",
                             as: "toSubscribed"
@@ -67,16 +67,10 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                     {
                         $addFields: {
                             toSubscribed: {
-                                $cond: {
-                                    $if: {
                                         $in: [
                                             channelId,
                                             "$toSubscribed.subscriber"
                                         ],
-                                        then: true,
-                                        else: false
-                                    }
-                                },
                                 subscriberCount: {
                                     $size: "$toSubscribed"
                                 }
@@ -100,6 +94,9 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
                     subscriberCount: 1
                 }
             }
+        },
+        {
+            $replaceRoot: { newRoot: "$subscriber"}
         }
     ])
 
