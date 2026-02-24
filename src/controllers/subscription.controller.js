@@ -36,9 +36,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 })
 
 // controller to return subscriber list of a channel
-const getUserChannelSubscribers = asyncHandler(async (req, res) => {
-    console.log("Params:", req.params);
-    
+const getUserChannelSubscribers = asyncHandler(async (req, res) => {    
     let { channelId } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(channelId)) {
