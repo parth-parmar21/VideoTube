@@ -15,6 +15,43 @@ const getAllVideos = asyncHandler(async (req, res) => {
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description} = req.body
     // TODO: get video, upload to cloudinary, create video
+
+    if ([title, description].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "Title and description are required")
+    }
+
+    const videoLocalPath = req.files?.videoFile[0]?.path;
+    if (!videoLocalPath) {
+        throw new ApiError(400, "Video file not found")
+    }
+    
+    const thumbnailLocalPath = req.files?.thumbnail[0]?.path;
+    if (!thumbnailLocalPath) {
+        throw new ApiError(400, "Thumbnail file not found")
+    }
+    
+    const video = await uploadOnCloudinary(videoLocalPath)
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
+
+    const createVideo = await Video.create({
+        title,
+        description,
+        videoFile: video.url || "",
+        thumbnail: thumbnail.url || "",
+        duration: video.duration,
+        owner: req.user?._id,
+        isPublished: false
+    })
+
+    const videoUploaded = await Video.findById(createVideo._id)
+
+    if (!videoUploaded) {
+        throw new ApiError(400, "Something went wrong while uploading video")
+    }
+    
+    return res
+    .status(200)
+        .json(new ApiResponse(200, video, "Video uploaded successfully"))
 })
 
 const getVideoById = asyncHandler(async (req, res) => {
