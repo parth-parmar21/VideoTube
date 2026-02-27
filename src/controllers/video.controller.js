@@ -58,8 +58,6 @@ const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: get video by id
 
-    console.log(videoId);
-
     if (!isValidObjectId(videoId)) {
         throw new ApiError(405, "Video id not found")
     }
@@ -188,8 +186,54 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    //TODO: update video details like title, description, thumbnail
+    const {title, thumbnail, description} = req.body
 
+    //TODO: update video details like title, description, thumbnail
+    console.log(title);
+    console.log(description);
+    console.log(thumbnail);
+
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Video id invalid")
+    }
+
+    if (![title, description].some((field) => field.trim() === "")) {
+        throw new ApiError(400, "title and description required")
+    }
+
+    if (!thumbnail) {
+        throw new ApiError(400, "thumbnail not found")
+    }
+
+    const video = await Video.findById(videoId)
+
+    if (video?.owner.toString() !== req.user?._id.toString()) {
+        throw new ApiError(400, "Only a owner can update a video")
+    }
+
+    console.log(video);
+    
+    const updatedVideo = await Video.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                title,
+                description,
+                thumbnail
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    if (!updatedVideo) {
+        throw new ApiError(400, "Something went wrong while updating video. please try again")
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, updatedVideo, "Video updated successfully"))
 })
 
 const deleteVideo = asyncHandler(async (req, res) => {
