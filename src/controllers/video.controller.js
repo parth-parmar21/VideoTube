@@ -186,22 +186,25 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
-    const {title, thumbnail, description} = req.body
-
+    const {title, description} = req.body
+    const thumbnail  = req.file?.path
     //TODO: update video details like title, description, thumbnail
-    console.log(title);
-    console.log(description);
-    console.log(thumbnail);
 
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, "Video id invalid")
     }
 
-    if (![title, description].some((field) => field.trim() === "")) {
+    if ([title, description].some((field) => field.trim() === "")) {
         throw new ApiError(400, "title and description required")
     }
 
     if (!thumbnail) {
+        throw new ApiError(400, "thumbnail is missing")
+    }
+
+    const newThumbnail = await uploadOnCloudinary(thumbnail)
+
+    if (!newThumbnail.url) {
         throw new ApiError(400, "thumbnail not found")
     }
 
@@ -211,22 +214,21 @@ const updateVideo = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Only a owner can update a video")
     }
 
-    console.log(video);
     
     const updatedVideo = await Video.findByIdAndUpdate(
-        req.user?._id,
+        videoId,
         {
             $set: {
                 title,
                 description,
-                thumbnail
+                thumbnail: newThumbnail.url
             }
         },
         {
             new: true
         }
     )
-
+    
     if (!updatedVideo) {
         throw new ApiError(400, "Something went wrong while updating video. please try again")
     }
