@@ -189,7 +189,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     const {title, description} = req.body
     const thumbnail  = req.file?.path
     //TODO: update video details like title, description, thumbnail
-
+    
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, "Video id invalid")
     }
@@ -241,6 +241,26 @@ const updateVideo = asyncHandler(async (req, res) => {
 const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     //TODO: delete video
+
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid video id")
+    }
+
+    const video = await Video.findById(videoId)
+    
+    if (video?.owner.toString() !== req.user?._id.toString()) {
+        throw new ApiError(400, "Only a owner can delete a video")
+    }
+
+    const deleteVideo = await Video.findByIdAndDelete(video?._id)
+
+    if (!deleteVideo) {
+        throw new ApiError(400, "Failed to delete the video please try again")
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, { idDeleted: true}, "Video deleted successfully"))
 })
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
