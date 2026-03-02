@@ -84,11 +84,40 @@ const updateComment = asyncHandler(async (req, res) => {
 
 const deleteComment = asyncHandler(async (req, res) => {
     // TODO: delete a comment
+    const { commentId } = req.params
+
+    if (!isValidObjectId(commentId)) {
+        throw new ApiError(400, "Comment id not found")
+    }
+console.log(commentId);
+
+    // const comment = await Comment.findById(commentId)
+
+    // if (!comment) {
+    //     throw new ApiError(400, "Comment not found")
+    // }
+
+    const deletedComment = await Comment.findOneAndDelete(
+        {
+            _id: commentId,
+            owner: req.user?._id
+        }
+    )
+    console.log(deletedComment);
+    console.log(req.user?._id);
+    
+    if (!deletedComment) {
+        throw new ApiError(404, "Comment not found or unauthorized");
+    }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {isDeleted: true}, "comment deleted successfully"))
 })
 
 export {
     getVideoComments, 
     addComment, 
     updateComment,
-     deleteComment
+    deleteComment
     }
