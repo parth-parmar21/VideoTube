@@ -53,6 +53,31 @@ const deletePlaylist = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
     // TODO: delete playlist
 
+    if (!isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Playlist id not found")
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+
+    if (!playlist) {
+        throw new ApiError(400, "Playlist not found")
+    }
+
+    const deletedPlaylist = await Playlist.findOneAndDelete(
+        {
+            _id: playlistId,
+            owner: req.user?._id
+        }
+    )
+
+    if (!deletePlaylist) {
+        throw new ApiError(400, "failed to delete playlist")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {isDeleted: true}, "Playlist deleted successfully"))
+
 })
 
 const updatePlaylist = asyncHandler(async (req, res) => {
