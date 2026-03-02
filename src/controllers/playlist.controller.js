@@ -119,11 +119,10 @@ const getPlaylistById = asyncHandler(async (req, res) => {
             }
         }
     ])
-console.log(getPlaylist);
 
-    // if (!getPlaylist?.length) {
-    //     throw new ApiError(400, "Playlist does not exists")
-    // }
+    if (!getPlaylist?.length) {
+        throw new ApiError(400, "Playlist does not exists")
+    }
 
     return res
     .status(200)
