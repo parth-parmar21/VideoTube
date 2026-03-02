@@ -36,6 +36,98 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 const getPlaylistById = asyncHandler(async (req, res) => {
     const {playlistId} = req.params
     //TODO: get playlist by id
+
+    if (!isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Invalid playlist id")
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+    
+    if (!playlist) {
+        throw new ApiError(400, "Playlist not found")
+    }
+
+    const getPlaylist = await Playlist.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(playlistId)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "videos",
+                foreignField: "_id",
+                as: "videos"
+            }
+        },
+        {
+            $addFields: {
+                videos: {
+                    $filter: {
+                        input: "$videos",
+                        as: "video",
+                        cond: { $eq: ["$$video.isPublished", true] }
+                    }
+                }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner"
+            }
+        },
+        {
+            $addFields: {
+                totalVideos: {
+                    $size: "$videos"
+                },
+                totalViews: {
+                    $sum: "$videos.views"
+                },
+                owner: {
+                    $first: "$owner"
+                },
+            }
+        },
+        {
+            $project: {
+                name: 1,
+                description: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                totalVideos: 1,
+                totalViews: 1,
+                videos: {
+                    _id: 1,
+                    "videoFile.url": 1,
+                    "thumbnail.url": 1,
+                    title: 1,
+                    description: 1,
+                    duration: 1,
+                    createdAt: 1,
+                    views: 1
+                },
+                owner: {
+                    username: 1,
+                    "avatar.url": 1,
+                    fullName: 1
+                }
+            }
+        }
+    ])
+console.log(getPlaylist);
+
+    // if (!getPlaylist?.length) {
+    //     throw new ApiError(400, "Playlist does not exists")
+    // }
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, getPlaylist[0], "Playlists fetched successfully"))
 })
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
