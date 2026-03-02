@@ -87,7 +87,6 @@ const getVideoComments = asyncHandler(async (req, res) => {
     }
 
     const comments = await Comment.aggregatePaginate(getComments, options)
-    console.log(comments);
     
     return res
     .status(200)
@@ -152,8 +151,6 @@ const updateComment = asyncHandler(async (req, res) => {
         }
     );
     const comments = await Comment.findById(commentId);
-    console.log("Comment Owner:", comments.owner);
-    console.log(updateComment);
     
     if (!updateComment) {
         throw new ApiError(400, "only owner can update comment")
@@ -171,7 +168,6 @@ const deleteComment = asyncHandler(async (req, res) => {
     if (!isValidObjectId(commentId)) {
         throw new ApiError(400, "Comment id not found")
     }
-console.log(commentId);
 
     // const comment = await Comment.findById(commentId)
 
@@ -185,9 +181,7 @@ console.log(commentId);
             owner: req.user?._id
         }
     )
-    console.log(deletedComment);
-    console.log(req.user?._id);
-    
+
     if (!deletedComment) {
         throw new ApiError(404, "Comment not found or unauthorized");
     }
