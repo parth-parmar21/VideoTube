@@ -3,7 +3,7 @@ import {Playlist} from "../models/playlist.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
-
+import { Video } from '../models/video.model.js'
 
 const createPlaylist = asyncHandler(async (req, res) => {
     const { name, description } = req.body
@@ -40,6 +40,49 @@ const getPlaylistById = asyncHandler(async (req, res) => {
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const {playlistId, videoId} = req.params
+    
+    if (!isValidObjectId(playlistId)) {
+        throw new ApiError(400, "invalid playlist id");
+    }
+
+    if (!isValidObjectId(videoId)) {
+        throw new ApiError(400, "invalid video id");
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+    const video = await Video.findById(videoId)
+
+    if (!playlist) {
+        throw new ApiError(400, "Playlist not found")
+    }
+
+    if (!video) {
+        throw new ApiError(400, "Video not found")
+    }
+
+    const addToPlaylist = await Playlist.findOneAndUpdate(
+        {
+            _id: playlist?._id,
+            owner: req.user?._id
+        },
+        {
+            $addToSet: {
+                video: videoId
+            }
+        },
+        {
+            new: true
+        }
+    )
+console.log(addToPlaylist);
+
+    if (!addToPlaylist) {
+        throw new ApiError(400, "Failed to add video to playlist")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, addToPlaylist, "Video add to playlist successfully"))
 
 })
 
