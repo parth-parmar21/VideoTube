@@ -74,7 +74,6 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
             new: true
         }
     )
-console.log(addToPlaylist);
 
     if (!addToPlaylist) {
         throw new ApiError(400, "Failed to add video to playlist")
@@ -90,6 +89,32 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     const {playlistId, videoId} = req.params
     // TODO: remove video from playlist
 
+    if (!isValidObjectId(playlistId) || !isValidObjectId(videoId)) {
+        throw new ApiError(400, "Invalid PlaylistId or videoId");
+    }
+
+
+    const playlist = await Playlist.findById(playlistId)
+    const video = await Video.findById(videoId)
+
+    if (!playlist) {
+        throw new ApiError(400, "Playlist not found")
+    }
+
+    if (!video) {
+        throw new ApiError(400, "Video not found")
+    }    
+
+    await Playlist.findOneAndDelete(
+        {
+            _id: playlistId,
+            owner: req.user?._id
+        }
+    )
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {isVideoRemoved: true}, "Video removed from playlist successfully"))
 })
 
 const deletePlaylist = asyncHandler(async (req, res) => {
