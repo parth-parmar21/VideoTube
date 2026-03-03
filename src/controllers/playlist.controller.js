@@ -62,17 +62,6 @@ const getPlaylistById = asyncHandler(async (req, res) => {
             }
         },
         {
-            $addFields: {
-                videos: {
-                    $filter: {
-                        input: "$videos",
-                        as: "video",
-                        cond: { $eq: ["$$video.isPublished", true] }
-                    }
-                }
-            }
-        },
-        {
             $lookup: {
                 from: "users",
                 localField: "owner",
@@ -124,6 +113,9 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Playlist does not exists")
     }
 
+    console.log(getPlaylist);
+    
+
     return res
     .status(200)
     .json(new ApiResponse(200, getPlaylist[0], "Playlists fetched successfully"))
@@ -147,14 +139,15 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Video not found")
     }
 
-    const addToPlaylist = await Playlist.findOneAndUpdate(
-        {
-            _id: playlist?._id,
-            owner: req.user?._id
-        },
+    if (playlist?.owner.toString() && video?.owner.toString() !== req.user?._id.toString()) {
+        throw new ApiError(400, "Only authorized person can update playlist")
+    }
+
+    const addToPlaylist = await Playlist.findByIdAndUpdate(
+        playlistId,
         {
             $addToSet: {
-                video: videoId?._id
+                videos: videoId
             }
         },
         {
@@ -168,7 +161,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, addToPlaylist, "Video add to playlist successfully"))
+        .json(new ApiResponse(200, addToPlaylist, "Video added to playlist successfully"))
 
 })
 
@@ -179,7 +172,6 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     if (!isValidObjectId(playlistId) || !isValidObjectId(videoId)) {
         throw new ApiError(400, "Invalid PlaylistId or videoId");
     }
-
 
     const playlist = await Playlist.findById(playlistId)
     const video = await Video.findById(videoId)
