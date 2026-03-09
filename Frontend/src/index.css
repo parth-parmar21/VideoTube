@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+
+:root{
+    --bg-dark: #262626;
+    --bg-light: #EEEEEE;
+    --button: #FF5A5A;
+    --txt-light: #ffffffa6;
+}
