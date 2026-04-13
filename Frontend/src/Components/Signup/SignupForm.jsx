@@ -15,7 +15,7 @@ const SignupForm = () => {
                     sign up account
                 </h2>
                 <p className='text-(--txt-light) py-1'>
-                    Enter your personal data to create account
+                    Enter your credential to create account
                 </p>
             </div>
 
@@ -44,7 +44,7 @@ const SignupForm = () => {
 
             <div className='flex mx-auto gap-2'>
                 <div>
-                    <label>First Name</label>
+                    <label>User Name</label>
                     <input
                         type="text"
                         className='bg-(--bg-dark) rounded-lg py-2 px-3 mt-2 w-[95%]'
@@ -52,11 +52,11 @@ const SignupForm = () => {
                     />
                 </div>
                 <div>
-                    <label>Last Name</label>
+                    <label>Full Name</label>
                     <input
                         type="text"
                         className='bg-(--bg-dark) rounded-lg py-2 px-3 mt-2 w-[95%]'
-                        placeholder='eg. Francisco'
+                        placeholder='eg. Jhon Francisco'
                     />
                 </div>
             </div>
@@ -81,7 +81,7 @@ const SignupForm = () => {
             </div>
             <button className='w-full bg-white text-black py-2 my-4 rounded-lg'>Sign Up</button>
 
-            <h2 className='text-center text-[#ffffff8e]'>Already have an Account? <span className='text-white hover:border-b cursor-pointer' onClick={goLogIn}>Log in</span></h2>
+            <h2 className='text-center text-[#ffffff8e]'>Already have an Account? <span className='text-white hover:border-b cursor-pointer' onClick={goLogIn}>Log In</span></h2>
         </form>
     )
 }
