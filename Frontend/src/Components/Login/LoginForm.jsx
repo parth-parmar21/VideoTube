@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import github from '../../assets/icon-github.svg'
 import google from '../../assets/icon-google.svg'
 import { useNavigate } from 'react-router-dom'
@@ -14,21 +14,25 @@ const LoginForm = () => {
         navigate("/signup")
     }
 
-    const formSubmit = async (e) => {
-        e.preventDefault()
-        
-        try {
-            await axios.post("http://localhost:8000/api/v1/users/login", 
-                formData
-            )
-            navigate("/home")
-        } catch (error) {
-            console.error(error.response?.data || error.message);
+        const formSubmit = async (e) => {
+            e.preventDefault()
+            console.log("API CALL STARTED"); // 👈 add this
+
+            try {
+                const res = await axios.post("http://localhost:8000/api/v1/users/login",
+                    formData
+                )
+                localStorage.setItem("token", res.data.data.accessToken)
+
+                navigate("/home")
+            } catch (error) {
+                console.error(error.response?.data || error.message);
+            }
+
         }
-    }
 
     const handleChange = (e) => {
-        const {name, value} = e.target
+        const { name, value } = e.target
 
         setFormData({
             ...formData,

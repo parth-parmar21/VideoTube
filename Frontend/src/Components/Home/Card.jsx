@@ -1,37 +1,74 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const Card = () => {
-const [user, setUser] = useState(null)
-    const urls = async () => {
-        const res = await axios.post(
-            "http://localhost:8000/api/v1/users/register",
-            data
-        ); 
+    const [video, setVideo] = useState(null)
+    // const [token, setToken] = useState(null)
 
-        const user = res.data.data;
-        setUser(res.data.data)
-        
+    const fetchVideos = async () => {
+        try {
+            const token = localStorage.getItem("token")
+
+            const res = await axios.get(
+                "http://localhost:8000/api/v1/videos",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            setVideo(res.data.data)
+
+        } catch (error) {
+            console.error(error.response?.data || error.message)
+        }
     }
-    return (
-        <div className='flex flex-wrap'>
-            <div className='h-80 w-90 my-5 mx-5'>
-                <div className='h-[50%] w-full'>
-                    <img src=""
-                        className='object-cover h-full w-full'
-                        alt=""
-                    />
-                </div>
-                <div className='flex gap-4 h-[50%] w-full py-2'>
-                    <div className='bg-red-300 rounded-4xl h-10 w-20'>
 
+    useEffect(()=>{
+        fetchVideos()
+    }, [])
+
+    return (
+        <div className="flex flex-wrap gap-6 m-2">
+            {video?.docs?.map((e) => (
+                <div
+                    key={e._id}
+                    className="w-90 rounded-2xl overflow-hidden hover:bg-[#ffffff20] transition duration-300 m-5"
+                >
+                    <div className="w-full h-42 rounded-2xl">
+                        <img
+                            src={e.thumbnail}
+                            className="w-full h-full object-cover rounded-2xl"
+                            alt="Thumbnail"
+                        />
                     </div>
-                    <div>
-                        <h2 className=''>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt voluptatum alias sint!</h2>
-                        <p className='font-light pt-1'>Lorem ipsum dolor sit amet.</p>
-                        <p className='font-light'>User name</p>
+
+                    <div className="flex gap-4 p-3">
+                        <div className="w-10 h-10 shrink-0">
+                            <img
+                                src={e.ownerDetails?.avatar}
+                                className="w-full h-full rounded-full object-cover"
+                                alt="avatar"
+                            />
+                        </div>
+
+                        <div className="flex flex-col overflow-hidden">
+                            <h2 className="text-sm font-semibold line-clamp-2">
+                                {e.title}
+                            </h2>
+
+                            <p className="text-xs text-gray-400 line-clamp-2 mt-1">
+                                {e.description}
+                            </p>
+
+                            <p className="text-xs text-gray-500 mt-1">
+                                {e.ownerDetails?.username}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ))}
         </div>
     )
 }
