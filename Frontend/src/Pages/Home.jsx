@@ -1,15 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SideBar from '../Components/Home/SideBar'
 import SearchBar from '../Components/Home/SearchBar'
 import MainGrid from '../Components/Home/MainGrid'
+import SearchResult from '../Components/Home/SearchResult'
 
 const Home = () => {
+    const [query, setQuery] = useState("")
+
     return (
         <div className='h-screen text-white overflow-hidden'>
-            <SearchBar />
+            <SearchBar setQuery={setQuery} />
             <div className='flex h-screen w-full'>
                 <SideBar />
-                <MainGrid />
+
+                {
+                    query.trim() === "" ?
+                    <MainGrid />
+                    : <SearchResult query={query}/>
+                }
             </div>
         </div>
     )
