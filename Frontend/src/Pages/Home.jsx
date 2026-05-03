@@ -11,7 +11,7 @@ const Home = () => {
         <div className='min-h-screen text-white'>
             <SearchBar setQuery={setQuery} />
             <div className='flex h-screen w-full'>
-                <SideBar />
+                <SideBar/>
 
                 {
                     query.trim() === "" ?

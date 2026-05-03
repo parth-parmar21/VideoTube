@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SideBarButtonsBottom from './SideBarButtonsBottom';
 import SideBarButtonsTop from './SideBarButtonsTop';
 import { Menu } from 'lucide-react';
 
-const SideBar = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-
+const SideBar = ({ forcedCollpased = false}) => {
+    const [isCollapsed, setIsCollapsed] = useState(forcedCollpased);
+    useEffect(() => {
+        if (forcedCollpased) {
+            setIsCollapsed(true);
+        }
+    }, [forcedCollpased]);
     return (
         <div
             className={`h-full ${isCollapsed ? 'w-[5%]' : 'w-[20%]'} bg-black text-white flex flex-col justify-between py-5 px-3 border-r transition-all duration-300`}
@@ -17,8 +21,11 @@ const SideBar = () => {
                     <Menu
                         size={`${isCollapsed ? 40 : 40}`}
                         className={`${isCollapsed ? 'w-30' : 'w-11'} border p-1`}
-                        onClick={() =>
+                        onClick={() =>{
+                            if (!forcedCollpased) {
                             setIsCollapsed(!isCollapsed)
+                            }
+                        }
                         }
                     />
                 </div>
