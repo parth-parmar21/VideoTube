@@ -16,7 +16,7 @@ const Description = ({desc}) => {
 
             <button
                 onClick={() => setExpanded(!expanded)}
-                className="text-gray-900 mt-2 "
+                className="text-white mt-2 "
             >
                 {expanded ? <ChevronUp /> : <ChevronDown />}
             </button>

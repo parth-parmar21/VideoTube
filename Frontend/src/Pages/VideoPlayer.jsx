@@ -35,7 +35,6 @@ const VideoPlayer = () => {
     }, [videoId])
 
     if(!video) return <p>Loading...</p>
-    console.log(video);
 
     return (
         <div className='min-h-screen w-full bg-black text-white'>

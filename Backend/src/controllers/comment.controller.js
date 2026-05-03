@@ -74,7 +74,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 owner: {
                     username: 1,
                     fullName: 1,
-                    "avatar.url": 1
+                    avatar: 1
                 },
                 isLiked: 1
             }
@@ -111,10 +111,16 @@ const addComment = asyncHandler(async (req, res) => {
         content,
         owner: req.user?._id
     })
+
+    const popluateComment = await Comment.findById(comment._id)
+    .populate({
+        path: "owner",
+        select: "username avatar "
+    })
     
     return res
     .status(200)
-    .json(new ApiResponse(200, comment, "Comment created successfully"))
+    .json(new ApiResponse(200, popluateComment, "Comment created successfully"))
 })
 
 const updateComment = asyncHandler(async (req, res) => {
