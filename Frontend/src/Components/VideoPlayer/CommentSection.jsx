@@ -1,6 +1,6 @@
 import React from 'react'
 
-const CommentSection = () => {
+const CommentSection = ({videoId}) => {
     return (
         <div className="bg-black border p-3 rounded-xl">
             <h3 className="mb-3 font-semibold">Comments</h3>

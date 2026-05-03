@@ -20,8 +20,6 @@ const SearchResult = ({ query }) => {
                         },
                     },
                 );
-
-                console.log(res.data);
                 setVideos(res.data.data.docs || []);
             } catch (error) {
                 console.error(

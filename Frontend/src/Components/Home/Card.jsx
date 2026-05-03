@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const Card = () => {
     const [video, setVideo] = useState(null)
     // const [token, setToken] = useState(null)
+    const navigate = useNavigate()
 
     const fetchVideos = async () => {
         try {
@@ -35,6 +37,7 @@ const Card = () => {
                 <div
                     key={e._id}
                     className="w-90 rounded-2xl overflow-hidden hover:bg-[#ffffff20] transition duration-300 m-5"
+                    onClick={() => navigate(`/video/${e._id}`)}
                 >
                     <div className="w-full h-42 rounded-2xl">
                         <img
