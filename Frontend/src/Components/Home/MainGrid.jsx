@@ -3,7 +3,7 @@ import Card from './CArd'
 
 const MainGrid = () => {
     return (
-        <div className='h-full w-[85%] bg-black'>
+        <div className='h-full w-full bg-black'>
             <Card />
         </div>
     )

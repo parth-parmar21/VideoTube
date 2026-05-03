@@ -8,7 +8,7 @@ const Home = () => {
     const [query, setQuery] = useState("")
 
     return (
-        <div className='h-screen text-white overflow-hidden'>
+        <div className='min-h-screen text-white'>
             <SearchBar setQuery={setQuery} />
             <div className='flex h-screen w-full'>
                 <SideBar />
