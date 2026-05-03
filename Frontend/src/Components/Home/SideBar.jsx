@@ -12,7 +12,7 @@ const SideBar = ({ forcedCollpased = false}) => {
     }, [forcedCollpased]);
     return (
         <div
-            className={`h-full ${isCollapsed ? 'w-[5%]' : 'w-[20%]'} bg-black text-white flex flex-col justify-between py-5 px-3 border-r transition-all duration-300`}
+            className={`h-screen ${isCollapsed ? 'w-[5%]' : 'w-[20%]'} bg-black text-white flex flex-col justify-between py-5 px-3 border-r transition-all duration-300`}
         >
             <div>
                 <div
@@ -20,7 +20,7 @@ const SideBar = ({ forcedCollpased = false}) => {
                 >
                     <Menu
                         size={`${isCollapsed ? 40 : 40}`}
-                        className={`${isCollapsed ? 'w-30' : 'w-11'} border p-1`}
+                        className={`${forcedCollpased? 'hidden': 'block'} ${isCollapsed ? 'w-30' : 'w-11'} border p-1`}
                         onClick={() =>{
                             if (!forcedCollpased) {
                             setIsCollapsed(!isCollapsed)
