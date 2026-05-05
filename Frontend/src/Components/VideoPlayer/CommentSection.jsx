@@ -56,8 +56,8 @@ const CommentSection = ({ videoId }) => {
     if (loading) return <p>Loading Comments...</p>;
 
     return (
-        <div className='bg-black border p-3 rounded-xl '>
-            <h3 className='mb-3 font-semibold'>Comments</h3>
+        <div className='bg-black border p-6 rounded-xl '>
+            <h3 className='mb-3 font-semibold text-xl'>Comments</h3>
 
             <input
                 type='text'

@@ -1,12 +1,13 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ChannelDetails from "./ChannelDetails";
 
 const Description = ({desc}) => {
     const [expanded, setExpanded] = useState(false);
     return (
-        <div className="bg-black border p-3 rounded-xl">
-
-            <h2 className="text-lg font-semibold mb-2">
+        <div className="bg-black border rounded-xl p-6">
+            <ChannelDetails />
+            <h2 className="text-xl font-semibold my-2">
                 Description
             </h2>
 

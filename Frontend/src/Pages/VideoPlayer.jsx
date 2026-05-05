@@ -8,10 +8,10 @@ import CommentSection from '../Components/VideoPlayer/CommentSection'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 const VideoPlayer = () => {
-    const {videoId} = useParams()
+    const { videoId } = useParams()
     const [video, setVideo] = useState(null)
 
-    const fetchVideos = async() => {
+    const fetchVideos = async () => {
         try {
             const token = localStorage.getItem("token")
             const res = await axios.get(
@@ -21,20 +21,21 @@ const VideoPlayer = () => {
                         Authorization: `Bearer ${token}`
                     }
                 }
-            )            
+            )
             setVideo(res.data.data)
-            
+
         } catch (error) {
             console.log(error);
-            
+
         }
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         fetchVideos()
     }, [videoId])
 
-    if(!video) return <p>Loading...</p>
+    
+    if (!video) return <p>Loading...</p>
 
     return (
         <div className='min-h-screen w-full bg-black text-white'>
@@ -47,11 +48,11 @@ const VideoPlayer = () => {
 
                     <div className='w-[70%] flex flex-col gap-4'>
 
-                        <Video className="w-full aspect-video" videoUrl={video.videoFile}/>
+                        <Video className="w-full aspect-video" videoUrl={video.videoFile} />
 
-                        <Description desc={video.description}/>
+                        <Description desc={video.description} />
 
-                        <CommentSection videoId={video._id}/>
+                        <CommentSection videoId={video._id} />
 
                     </div>
 

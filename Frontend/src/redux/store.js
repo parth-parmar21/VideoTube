@@ -1,8 +1,8 @@
 import {configureStore} from '@reduxjs/toolkit'
-import { authSlice } from './features/auth.slice'
+import likeReducer from './features/video.slice.js'
 
 export const store = configureStore({
     reducer: {
-        auth: authSlice
+        like: likeReducer
     }
 })
