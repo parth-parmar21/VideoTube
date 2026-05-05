@@ -21,7 +21,7 @@ const ChannelDetails = () => {
     const dispatch = useDispatch()
     
     useEffect(() => {
-        dispatch(fetchLikeStatus({ type: "v", id: videoId }))
+        dispatch(fetchLikeStatus({type: "v", id: videoId }))
     }, [videoId, dispatch])
 
     const likeData = useSelector(

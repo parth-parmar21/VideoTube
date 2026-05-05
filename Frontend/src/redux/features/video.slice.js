@@ -42,7 +42,7 @@ export const fetchLikeStatus = createAsyncThunk(
             const token = localStorage.getItem("token");
 
             const res = await axios.get(
-                `http://localhost:8000/api/v1/${route}/${type}/${id}`,
+                `http://localhost:8000/api/v1/likes/${type}/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ export const likeSlice = createSlice({
                 state.error = action.payload
             })
             .addCase(fetchLikeStatus.fulfilled, (state, action) => {
-                console.log(action.payload);
+                
                 const { type, id, isLiked, totalLikes } = action.payload
                 
                 state[type][id] = {
