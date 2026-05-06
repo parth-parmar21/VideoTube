@@ -82,12 +82,14 @@ const CommentSection = ({ videoId }) => {
                                         ).toDateString()}
                                     </p>
                                 </div>
-                                <p className='font-light'>
-                                    {c.owner?.username}
-                                </p>
-                                <p className='font-light mt-4'>
-                                    {c.content}
-                                </p>
+                                <div>
+                                    <p className='font-light'>
+                                        @{c.owner?.username}
+                                    </p>
+                                    <p className='font-light mt-4'>
+                                        {c.content}
+                                    </p>
+                                </div>
                             </div>
                             <div className='flex  flex-col items-center ml-auto'>
                                 <Heart

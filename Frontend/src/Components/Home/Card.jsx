@@ -32,7 +32,7 @@ const Card = () => {
     }, [])
 
     return (
-        <div className="flex flex-wrap gap-6 m-2">
+        <div className="flex flex-wrap m-2">
             {video?.docs?.map((e) => (
                 <div
                     key={e._id}

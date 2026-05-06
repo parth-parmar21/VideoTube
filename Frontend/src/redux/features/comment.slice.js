@@ -36,7 +36,7 @@
             try {
                 const token = localStorage.getItem("token")
 
-                const res = await axios.get(
+                const res = await axios.post(
                     `http://localhost:8000/api/v1/comments/${videoId}`,
                     {
                         content

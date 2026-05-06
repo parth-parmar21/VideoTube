@@ -57,7 +57,7 @@ const SearchResult = ({ query }) => {
                 return (
                     <div
                         key={e._id}
-                        className={`flex gap-4 text-start h-45 w-full ${!isSearch? 'my-0 mx-0': 'my-3 mx-5'} hover:bg-[#ffffff20] transition duration-300`}
+                        className={`flex gap-4 text-start h-45 w-full ${!isSearch? 'my-2 mx-0': 'my-5 mx-5'} hover:bg-[#ffffff20] transition duration-300`}
                     >
                         <div className={`${isSearch ? "h-full w-[25%]" : "h-full w-full"}`}>
                             <img
@@ -67,7 +67,7 @@ const SearchResult = ({ query }) => {
                             />
                         </div>
                         <div className='h-full w-[70%]'>
-                            <p className={`${isSearch ? 'text-xl': 'text-lg'}`}>
+                            <p className={`${isSearch ? 'text-xl': 'text-lg leading-tight'}`}>
                                 {e.title}
                             </p>
                             <p className={`${isSearch ? 'my-2': 'my-0 font-light'}`}>
