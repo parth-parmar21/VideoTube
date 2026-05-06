@@ -50,7 +50,7 @@ const VideoPlayer = () => {
 
                         <Video className="w-full aspect-video" videoUrl={video.videoFile} />
 
-                        <Description desc={video.description} />
+                        <Description desc={video.description} videoId={video._id} channelId = {video.owner._id}/>
 
                         <CommentSection videoId={video._id} />
 

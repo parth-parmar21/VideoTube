@@ -24,7 +24,7 @@
 
                 return res.data.data.docs
             } catch (error) {
-                return rejectWithValue(error.Response?.data || error)
+                return rejectWithValue(error.response?.data || error)
 
             }
         }

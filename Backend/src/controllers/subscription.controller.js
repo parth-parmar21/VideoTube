@@ -19,10 +19,10 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
     if (isSubscribed) {
         const Unsubscribed = await Subscription.findByIdAndDelete(isSubscribed?._id)
-
+        const totalSubs = await Subscription.countDocuments({ channel: channelId})
         return res
             .status(200)
-            .json(new ApiResponse(200, { subscribed: false }, "Unsubscribed successfully"))
+            .json(new ApiResponse(200, { subscribed: false, totalSubs }, "Unsubscribed successfully"))
     }
 
     const subscribed = await Subscription.create({
@@ -30,9 +30,36 @@ const toggleSubscription = asyncHandler(async (req, res) => {
         channel: channelId
     })
 
+    const totalSubs = await Subscription.countDocuments({ channel: channelId })
+
     return res
         .status(200)
-        .json(new ApiResponse(200, { subscribed: true }, "Subscribed successfully"))
+        .json(new ApiResponse(200, { subscribed: true, totalSubs }, "Subscribed successfully"))
+})
+
+const subscriptionStatus = asyncHandler(async (req, res) => {
+    const { channelId } = req.params
+
+    if (!isValidObjectId(channelId)) {
+        throw new ApiError(400, "Invalid channel id")
+    }
+
+    const alreadySub = await Subscription.findOne({
+        channel: channelId,
+        subscriber: req.user?._id
+    })
+
+    const totalSubs = await Subscription.countDocuments({ channel: channelId })
+
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200,
+            {
+                isSubscribed: !!alreadySub,
+                totalSubs
+            }
+        ))
 })
 
 // controller to return subscriber list of a channel
@@ -172,5 +199,6 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
 export {
     toggleSubscription,
     getUserChannelSubscribers,
-    getSubscribedChannels
+    getSubscribedChannels,
+    subscriptionStatus
 }

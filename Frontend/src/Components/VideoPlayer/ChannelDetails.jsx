@@ -9,28 +9,46 @@ import {
 import React, { useEffect, useState } from 'react';
 import PlayListCard from './PlayListCard';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchLikeStatus, toggleLike } from '../../redux/features/video.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    fetchLikeStatus,
+    toggleLike,
+} from '../../redux/features/video.slice';
+import {
+    fetchSubscriptionStatus,
+    toggleSubscription,
+} from '../../redux/features/subscribe.slice';
 
+const ChannelDetails = ({ videoId, channelId }) => {
+    // const { videoId } = useParams()
 
+    const [disLike, setDisLike] = useState(false);
+    const [video, setVideo] = useState(null);
+    const dispatch = useDispatch();
 
-const ChannelDetails = () => {
-    const { videoId } = useParams()
-    const [disLike, setDisLike] = useState(false)
-
-    const dispatch = useDispatch()
-    
     useEffect(() => {
-        dispatch(fetchLikeStatus({type: "v", id: videoId }))
-    }, [videoId, dispatch])
+        dispatch(
+            fetchLikeStatus({ type: 'v', id: videoId }),
+        );
+    }, [videoId, dispatch]);
 
     const likeData = useSelector(
-        (state) => state.like.v?.[videoId]
-    )
+        (state) => state.like.v?.[videoId],
+    );
 
-    const liked = likeData?.liked ?? false
-    const likeCount = likeData?.likeCount ?? 0
+    const liked = likeData?.liked ?? false;
+    const likeCount = likeData?.likeCount ?? 0;
 
+    const { isSubscribed, totalSubs } = useSelector(
+        (state) => state.subscription,
+    );
+
+    useEffect(() => {
+        if (channelId)
+            dispatch(
+                fetchSubscriptionStatus({ channelId }),
+            );
+    }, [channelId, dispatch]);
 
     return (
         <div className='h-46 text-white w-full border-b'>
@@ -51,25 +69,36 @@ const ChannelDetails = () => {
                         <button
                             className={`py-2 px-4 flex gap-2 items-center`}
                             onClick={() => {
-                                dispatch(toggleLike({ type: "v", id: videoId }))
+                                dispatch(
+                                    toggleLike({
+                                        type: 'v',
+                                        id: videoId,
+                                    }),
+                                );
                             }}
                         >
-                            <ThumbsUp className={`${liked ? 'text-purple-800' : 'text-white'}`} />
+                            <ThumbsUp
+                                className={`${liked ? 'text-purple-800' : 'text-white'}`}
+                            />
                             <span className='font-semibold'>
                                 {likeCount}
                             </span>
                         </button>
 
-                        <button className='py-2 px-4'
+                        <button
+                            className='py-2 px-4'
                             onClick={() => {
-                                disLike ? setDisLike(false) : setDisLike(true)
-                            }}>
-                            <ThumbsDown className={`${disLike ? 'text-purple-800' : 'text-white'}`} />
+                                disLike
+                                    ? setDisLike(false)
+                                    : setDisLike(true);
+                            }}
+                        >
+                            <ThumbsDown
+                                className={`${disLike ? 'text-purple-800' : 'text-white'}`}
+                            />
                         </button>
                     </div>
-                    <button
-                        className='flex items-center gap-2 px-4 bg-white text-black border rounded-xl'
-                    >
+                    <button className='flex items-center gap-2 px-4 bg-white text-black border rounded-xl'>
                         <FolderPlus strokeWidth={1.5} />
                         <span className='font-semibold'>
                             Save
@@ -89,14 +118,34 @@ const ChannelDetails = () => {
                     </div>
                     <div>
                         <h2>Full name</h2>
-                        <p>Subscribers</p>
+                        <p>{totalSubs} subscriber</p>
                     </div>
                 </div>
                 <div>
-                    <button className='flex gap-2 border py-2 px-4 font-semibold hover:bg-purple-800 hover:border-purple-800'
+                    <button
+                        className={`flex gap-2 border py-2 px-4 font-semibold 
+                            ${isSubscribed
+                                ? 'bg-purple-800 border-purple-800 text-white'
+                                : 'hover:bg-purple-800 hover:border-purple-800'
+                            }`}
+                        onClick={() => {
+                            dispatch(
+                                toggleSubscription({
+                                    channelId,
+                                }),
+                            );
+                        }}
                     >
-                        <UserRoundPlus />
-                        <span>Subscribe</span>
+                        {isSubscribed ? (
+                            <UserRoundCheck />
+                        ) : (
+                            <UserRoundPlus />
+                        )}
+                        <span>
+                            {isSubscribed
+                                ? 'Subscribed'
+                                : 'Subscribe'}
+                        </span>
                     </button>
                 </div>
             </div>
