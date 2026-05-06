@@ -20,10 +20,10 @@ import {
 } from '../../redux/features/subscribe.slice';
 
 const ChannelDetails = ({ videoId, channelId }) => {
-    // const { videoId } = useParams()
 
     const [disLike, setDisLike] = useState(false);
     const [video, setVideo] = useState(null);
+    const [showPlaylist, setShowPlaylist] = useState(false)
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -98,7 +98,9 @@ const ChannelDetails = ({ videoId, channelId }) => {
                             />
                         </button>
                     </div>
-                    <button className='flex items-center gap-2 px-4 bg-white text-black border rounded-xl'>
+                    <button className='flex items-center gap-2 px-4 bg-white text-black border rounded-xl'
+                    onClick={() => setShowPlaylist(true)}
+                    >
                         <FolderPlus strokeWidth={1.5} />
                         <span className='font-semibold'>
                             Save
@@ -149,6 +151,9 @@ const ChannelDetails = ({ videoId, channelId }) => {
                     </button>
                 </div>
             </div>
+            {showPlaylist && (
+                <PlayListCard onClose={() => setShowPlaylist(false)} />
+            )}
         </div>
     );
 };
