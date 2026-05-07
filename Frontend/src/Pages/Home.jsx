@@ -11,13 +11,14 @@ const Home = () => {
         <div className='min-h-screen text-white bg-black'>
             <SearchBar setQuery={setQuery} />
             <div className='flex h-screen w-full'>
-                <SideBar/>
-
-                {
-                    query.trim() === "" ?
-                    <MainGrid />
-                    : <SearchResult query={query}/>
-                }
+                <SideBar />
+                <div className='flex-1'>
+                    {
+                        query.trim() === "" ?
+                            <MainGrid />
+                            : <SearchResult query={query} />
+                    }
+                </div>
             </div>
         </div>
     )

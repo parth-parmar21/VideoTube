@@ -12,7 +12,7 @@ const SideBar = ({ forcedCollpased = false}) => {
     }, [forcedCollpased]);
     return (
         <div
-            className={`h-screen ${isCollapsed ? 'w-[5%]' : 'w-[20%]'} bg-black text-white flex flex-col justify-between py-5 px-3 border-r transition-all duration-300`}
+            className={`h-screen ${isCollapsed ? 'w-20' : 'w-64'} bg-black text-white flex flex-col justify-between py-5 px-3 border-r transition-all duration-300`}
         >
             <div>
                 <div
