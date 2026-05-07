@@ -5,6 +5,7 @@ import Login from './Pages/Login'
 import Home from './Pages/Home'
 import VideoPlayer from './Pages/VideoPlayer'
 import LikedVideos from './Pages/LikedVideos'
+import History from './Pages/History'
 const App = () => {
   return (
     <div>
@@ -15,6 +16,7 @@ const App = () => {
         <Route path='/home' element={<Home />}/>
         <Route path='/video/:videoId' element={<VideoPlayer />}/>
         <Route path='/likes/videos' element={<LikedVideos />} />
+        <Route path='/history' element={<History />}/>
       </Routes>
     </div>
   )

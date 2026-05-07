@@ -22,8 +22,6 @@
                 )
 
                 setVideo(res.data)
-                console.log(res.data.data);
-                
 
             } catch (error) {
                 console.error(error.response?.data || error.message)
